@@ -58,19 +58,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
-        - name: Build Capital-Trader image
-          uses: docker/build-push-action@v5
-          with:
-            context: .
-            file: capital_trader/Dockerfile
-            push: true
-            tags: ghcr.io/farajfahadqulens/tradingcore-capital-trader:latest
+      - name: Build Capital-Trader image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: capital_trader/Dockerfile
+          push: true
+          tags: ghcr.io/farajfahadqulens/tradingcore-capital-trader:latest
 
-        - name: Build Clean-Agent image
-          uses: docker/build-push-action@v5
-          with:
-            context: .
-            file: clean-agent/Dockerfile
-            push: true
-            tags: ghcr.io/farajfahadqulens/tradingcore-clean-agent:latest
+      - name: Build Clean-Agent image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: clean-agent/Dockerfile
+          push: true
+          tags: ghcr.io/farajfahadqulens/tradingcore-clean-agent:latest
 
