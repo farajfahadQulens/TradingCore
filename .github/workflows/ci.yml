@@ -44,23 +44,23 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-- name: Log in to GitHub Container Registry
-  uses: docker/login-action@v3
-  with:
-    registry: ghcr.io
-    username: ${{ github.actor }}
-    password: ${{ secrets.ghcr‑push‑pull }}
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.ghcr‑push‑pull }}
 
-- name: Build Capital‑Trader image
-  uses: docker/build-push-action@v5
-  with:
-    context: ./capital_trader
-    push: true
-    tags: ghcr.io/${{ github.repository_owner }}/tradingcore-capital-trader:latest
+      - name: Build Capital‑Trader image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./capital_trader
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/tradingcore-capital-trader:latest
 
-- name: Build Clean‑Agent image
-  uses: docker/build-push-action@v5
-  with:
-    context: ./clean-agent
-    push: true
-    tags: ghcr.io/${{ github.repository_owner }}/tradingcore-clean-agent:latest
+      - name: Build Clean‑Agent image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./clean-agent
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/tradingcore-clean-agent:latest
