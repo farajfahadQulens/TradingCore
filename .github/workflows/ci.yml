@@ -63,11 +63,11 @@ jobs:
         with:
           context: ./capital_trader
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/tradingcore-capital-trader:latest
+          tags: ghcr.io/farajfahadqulens/tradingcore-capital-trader:latest
 
       - name: Build Clean-Agent image
         uses: docker/build-push-action@v5
         with:
           context: ./clean-agent
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/tradingcore-clean-agent:latest
+          tags: ghcr.io/farajfahadqulens/tradingcore-clean-agent:latest
