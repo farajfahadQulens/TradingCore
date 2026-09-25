@@ -1,7 +1,7 @@
 #!/bin/bash
-# Railway start script – runs the FastAPI app in this image.
-# This image is built from the capital_trader directory, so the
-# FastAPI package lives directly under /app (no extra subdirectory).
+# Railway start script – runs FastAPI from the built image.
+# The Dockerfile sets WORKDIR /app, but we cd explicitly to be safe.
 
 PORT=${PORT:-8000}
+cd /app
 exec python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
