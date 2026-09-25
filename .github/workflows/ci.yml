@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Capital‑Trader dependencies
+        working-directory: ./capital_trader
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Capital‑Trader unit tests
+        working-directory: ./capital_trader
+        run: |
+          pytest -q
+
+      - name: Install Clean‑Agent dependencies
+        working-directory: ./clean-agent
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Clean‑Agent unit tests
+        working-directory: ./clean-agent
+        run: |
+          pytest -q
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+- name: Log in to GitHub Container Registry
+  uses: docker/login-action@v3
+  with:
+    registry: ghcr.io
+    username: ${{ github.actor }}
+    password: ${{ secrets.ghcr‑push‑pull }}
+
+- name: Build Capital‑Trader image
+  uses: docker/build-push-action@v5
+  with:
+    context: ./capital_trader
+    push: true
+    tags: ghcr.io/${{ github.repository_owner }}/tradingcore-capital-trader:latest
+
+- name: Build Clean‑Agent image
+  uses: docker/build-push-action@v5
+  with:
+    context: ./clean-agent
+    push: true
+    tags: ghcr.io/${{ github.repository_owner }}/tradingcore-clean-agent:latest
