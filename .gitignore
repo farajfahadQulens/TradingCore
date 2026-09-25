@@ -1,0 +1,30 @@
+# Git ignore for the TradingCore repo
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+# Virtual envs
+.venv/
+# Test caches
+.pytest_cache/
+# Build artifacts
+*.egg-info/
+# Logs
+*.log
+# OS files
+.DS_Store
+# Secrets and local data
+*.env
+*.env.*
+# SQLite databases
+*.sqlite3
+# Gold data (runtime generated)
+gold_data/
+# Docker artifacts
+docker-compose.override.yml
+# IDE configs
+.idea/
+.vscode/
+# Coverage
+htmlcov/
+.coverage

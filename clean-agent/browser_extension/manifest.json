@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Clean Agent BI Bridge",
+  "version": "0.1.0",
+  "description": "Send a user-selected BI Canvas or student-portal page to the local Clean Agent.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1:8091/*", "https://bi.instructure.com/*", "https://*.bi.no/*"],
+  "action": {
+    "default_title": "Send page to Clean Agent",
+    "default_popup": "popup.html"
+  }
+}

@@ -1,0 +1,15 @@
+# Docker ignore for clean-agent runtime build
+# Exclude env files, virtual envs, caches, data, and tests
+.env*
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+coverage
+htmlcov
+data
+tests
+*.sqlite3
+# Exclude local dev tools
+*.md
+README.md

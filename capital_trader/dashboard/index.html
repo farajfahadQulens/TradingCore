@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QTrader Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/jpeg" href="Media/icon.png" />
+    <link rel="stylesheet" href="styles.css?v=14" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <div class="nav-left">
+                <span class="brand">QTrader Dashboard</span>
+                <span class="brand-sep"></span>
+                <span class="badge-env" id="env-badge">—</span>
+            </div>
+            <div class="nav-right">
+                <a class="monitor-link" href="/monitor?epic=GOLD&amp;resolution=1m">Gold Monitor</a>
+                <button class="btn-refresh" id="btn-refresh" title="Refresh all data">↻</button>
+                <span class="connection-status">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Initialising...</span>
+                </span>
+                <span class="last-refresh" id="last-refresh"></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-4">
+        <div class="row metrics-row g-3">
+            <div class="col-md-3 col-6">
+                <div class="metric-card">
+                    <div class="metric-label">Balance</div>
+                    <div class="metric-value" id="balance-value">—</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="metric-card">
+                    <div class="metric-label">Equity</div>
+                    <div class="metric-value" id="equity-value">—</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="metric-card">
+                    <div class="metric-label">P&amp;L</div>
+                    <div class="metric-value" id="pnl-value">—</div>
+                    <div class="metric-sub" id="pnl-sub"></div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="metric-card">
+                    <div class="metric-label">Margin</div>
+                    <div class="metric-value" id="margin-value">—</div>
+                    <div class="metric-bar-track">
+                        <div class="metric-bar-fill" id="margin-bar" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticker-row" id="ticker-row">
+            <div class="ticker-item" id="ticker-GOLD">
+                <span class="ticker-epic">GOLD</span>
+                <span class="ticker-bid" id="ticker-GOLD-bid">—</span>
+                <span class="ticker-sep">/</span>
+                <span class="ticker-offer" id="ticker-GOLD-offer">—</span>
+                <span class="ticker-chg" id="ticker-GOLD-chg"></span>
+            </div>
+            <div class="ticker-item" id="ticker-US500">
+                <span class="ticker-epic">US500</span>
+                <span class="ticker-bid" id="ticker-US500-bid">—</span>
+                <span class="ticker-sep">/</span>
+                <span class="ticker-offer" id="ticker-US500-offer">—</span>
+                <span class="ticker-chg" id="ticker-US500-chg"></span>
+            </div>
+            <div class="ticker-item" id="ticker-BTCUSD">
+                <span class="ticker-epic">BTC</span>
+                <span class="ticker-bid" id="ticker-BTCUSD-bid">—</span>
+                <span class="ticker-sep">/</span>
+                <span class="ticker-offer" id="ticker-BTCUSD-offer">—</span>
+                <span class="ticker-chg" id="ticker-BTCUSD-chg"></span>
+            </div>
+            <div class="ticker-status" id="ticker-status"></div>
+        </div>
+
+        <div class="row g-3 monitor-row">
+            <div class="col-md-4">
+                <div class="monitor-card" id="monitor-GOLD">
+                    <div class="monitor-head">
+                        <span class="monitor-epic">GOLD</span>
+                        <span class="monitor-name" id="monitor-GOLD-name">Gold</span>
+                        <span class="monitor-status" id="monitor-GOLD-status">—</span>
+                    </div>
+                    <div class="monitor-prices">
+                        <div class="monitor-price-box bid">
+                            <div class="monitor-price-label">Bid</div>
+                            <div class="monitor-price-value" id="monitor-GOLD-bid">—</div>
+                        </div>
+                        <div class="monitor-price-box ask">
+                            <div class="monitor-price-label">Ask</div>
+                            <div class="monitor-price-value" id="monitor-GOLD-offer">—</div>
+                        </div>
+                    </div>
+                    <div class="monitor-footer">
+                        <span class="monitor-spread" id="monitor-GOLD-spread"></span>
+                        <span class="monitor-chg" id="monitor-GOLD-chg"></span>
+                        <span class="monitor-ts" id="monitor-GOLD-ts"></span>
+                    </div>
+                    <div class="monitor-sentiment" id="sentiment-GOLD">
+                        <span class="sentiment-label">Sentiment</span>
+                        <span class="sentiment-long" id="sentiment-GOLD-long">—</span>
+                        <div class="sentiment-bar"><div class="sentiment-fill" id="sentiment-GOLD-bar"></div></div>
+                        <span class="sentiment-short" id="sentiment-GOLD-short">—</span>
+                    </div>
+                    <div class="monitor-sparkline" id="spark-GOLD">
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark-svg"></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="monitor-card" id="monitor-US500">
+                    <div class="monitor-head">
+                        <span class="monitor-epic">US500</span>
+                        <span class="monitor-name" id="monitor-US500-name">US 500</span>
+                        <span class="monitor-status" id="monitor-US500-status">—</span>
+                    </div>
+                    <div class="monitor-prices">
+                        <div class="monitor-price-box bid">
+                            <div class="monitor-price-label">Bid</div>
+                            <div class="monitor-price-value" id="monitor-US500-bid">—</div>
+                        </div>
+                        <div class="monitor-price-box ask">
+                            <div class="monitor-price-label">Ask</div>
+                            <div class="monitor-price-value" id="monitor-US500-offer">—</div>
+                        </div>
+                    </div>
+                    <div class="monitor-footer">
+                        <span class="monitor-spread" id="monitor-US500-spread"></span>
+                        <span class="monitor-chg" id="monitor-US500-chg"></span>
+                        <span class="monitor-ts" id="monitor-US500-ts"></span>
+                    </div>
+                    <div class="monitor-sentiment" id="sentiment-US500">
+                        <span class="sentiment-label">Sentiment</span>
+                        <span class="sentiment-long" id="sentiment-US500-long">—</span>
+                        <div class="sentiment-bar"><div class="sentiment-fill" id="sentiment-US500-bar"></div></div>
+                        <span class="sentiment-short" id="sentiment-US500-short">—</span>
+                    </div>
+                    <div class="monitor-sparkline" id="spark-US500">
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark-svg"></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="monitor-card" id="monitor-BTCUSD">
+                    <div class="monitor-head">
+                        <span class="monitor-epic">BTC</span>
+                        <span class="monitor-name" id="monitor-BTCUSD-name">Bitcoin</span>
+                        <span class="monitor-status" id="monitor-BTCUSD-status">—</span>
+                    </div>
+                    <div class="monitor-prices">
+                        <div class="monitor-price-box bid">
+                            <div class="monitor-price-label">Bid</div>
+                            <div class="monitor-price-value" id="monitor-BTCUSD-bid">—</div>
+                        </div>
+                        <div class="monitor-price-box ask">
+                            <div class="monitor-price-label">Ask</div>
+                            <div class="monitor-price-value" id="monitor-BTCUSD-offer">—</div>
+                        </div>
+                    </div>
+                    <div class="monitor-footer">
+                        <span class="monitor-spread" id="monitor-BTCUSD-spread"></span>
+                        <span class="monitor-chg" id="monitor-BTCUSD-chg"></span>
+                        <span class="monitor-ts" id="monitor-BTCUSD-ts"></span>
+                    </div>
+                    <div class="monitor-sentiment" id="sentiment-BTCUSD">
+                        <span class="sentiment-label">Sentiment</span>
+                        <span class="sentiment-long" id="sentiment-BTCUSD-long">—</span>
+                        <div class="sentiment-bar"><div class="sentiment-fill" id="sentiment-BTCUSD-bar"></div></div>
+                        <span class="sentiment-short" id="sentiment-BTCUSD-short">—</span>
+                    </div>
+                    <div class="monitor-sparkline" id="spark-BTCUSD">
+                        <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark-svg"></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="exposure-card" id="exposure-card" style="display:none">
+            <div class="exposure-labels">
+                <span><span class="expo-dir short">Short</span> <span id="expo-short">0</span></span>
+                <span class="expo-net" id="expo-net">Net 0</span>
+                <span><span class="expo-dir long">Long</span> <span id="expo-long">0</span></span>
+            </div>
+            <div class="expo-track">
+                <div class="expo-fill short" id="expo-bar-short" style="width:50%"></div>
+                <div class="expo-fill long" id="expo-bar-long" style="width:50%"></div>
+            </div>
+        </div>
+
+        <div class="section-card stats-card">
+            <div class="section-header">
+                <h2>Performance Stats</h2>
+                <span class="section-ts" id="stats-ts"></span>
+            </div>
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-item"><div class="stat-label">Total Trades</div><div class="stat-value" id="stat-total-trades">—</div></div>
+                <div class="stat-item"><div class="stat-label">Win Rate</div><div class="stat-value" id="stat-win-rate">—</div></div>
+                <div class="stat-item"><div class="stat-label">Profit Factor</div><div class="stat-value" id="stat-profit-factor">—</div></div>
+                <div class="stat-item"><div class="stat-label">Avg Win</div><div class="stat-value" id="stat-avg-win">—</div></div>
+                <div class="stat-item"><div class="stat-label">Avg Loss</div><div class="stat-value" id="stat-avg-loss">—</div></div>
+                <div class="stat-item"><div class="stat-label">Best Trade</div><div class="stat-value" id="stat-best-trade">—</div></div>
+                <div class="stat-item"><div class="stat-label">Worst Trade</div><div class="stat-value" id="stat-worst-trade">—</div></div>
+                <div class="stat-item"><div class="stat-label">Consecutive Wins</div><div class="stat-value" id="stat-consec-wins">—</div></div>
+                <div class="stat-item"><div class="stat-label">Consecutive Losses</div><div class="stat-value" id="stat-consec-losses">—</div></div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Live Positions</h2>
+                        <span class="section-badge" id="positions-badge">0</span>
+                        <span id="stale-warning" style="display:none;font-size:0.68rem;color:var(--amber);font-weight:600;margin-left:8px">⚠ stale</span>
+                        <span class="section-ts" id="positions-ts"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="positions-table">
+                            <thead>
+                                <tr>
+                                    <th>Deal ID</th>
+                                    <th>Market</th>
+                                    <th>Direction</th>
+                                    <th>Size</th>
+                                    <th>Entry</th>
+                                    <th>Stop</th>
+                                    <th>P&amp;L</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="positions-body">
+                                <tr><td colspan="8" class="empty-msg">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Working Orders</h2>
+                        <span class="section-badge" id="orders-badge">0</span>
+                        <span class="section-ts" id="orders-ts"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Market</th>
+                                    <th>Direction</th>
+                                    <th>Size</th>
+                                    <th>Limit</th>
+                                    <th>Stop</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-body">
+                                <tr><td colspan="5" class="empty-msg">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-0">
+            <div class="col-12">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Recent Activity</h2>
+                        <span class="section-badge" id="activity-badge">0</span>
+                        <span class="section-ts" id="activity-ts"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="activity-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Market</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activity-body">
+                                <tr><td colspan="4" class="empty-msg">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-0">
+            <div class="col-12">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Alerts</h2>
+                        <span class="section-badge" id="alerts-badge">0</span>
+                        <span class="section-ts" id="alerts-ts"></span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table" id="alerts-table">
+                            <thead>
+                                <tr>
+                                    <th>Market</th>
+                                    <th>Condition</th>
+                                    <th>Threshold</th>
+                                    <th>Channel</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alerts-body">
+                                <tr><td colspan="5" class="empty-msg">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="dashboard.js?v=15"></script>
+</body>
+</html>

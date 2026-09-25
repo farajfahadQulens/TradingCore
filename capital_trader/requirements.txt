@@ -1,0 +1,14 @@
+ fastapi
+  uvicorn[standard]
+  aiohttp
+  websockets
+  pydantic>=2
+  pydantic-settings
+  sqlalchemy[asyncio]
+  asyncpg
+  python-dotenv
+  structlog
+  prometheus-client
+   backoff
+   redis>=5
+  

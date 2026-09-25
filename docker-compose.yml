@@ -1,0 +1,136 @@
+services:
+  # -------------------------------------------------
+  # PostgreSQL (used by Capital‑Trader)
+  # -------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: tradingcore-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: trading
+    ports:
+      - "5432:5432"
+    volumes:
+      - tradingcore-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d trading"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # -------------------------------------------------
+  # Redis (message bus for Capital‑Trader)
+  # -------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: tradingcore-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - tradingcore-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # -------------------------------------------------
+  # Capital‑Trader API
+  # -------------------------------------------------
+  capital-trader:
+    build:
+      context: ./capital_trader
+      dockerfile: Dockerfile
+    container_name: capital-trader
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./capital_trader/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres/trading
+      REDIS_URL: redis://redis:6379/0
+      GOLD_CSV_PATH: /data/gold_candles.csv
+      GOLD_STATUS_PATH: /data/gold_recorder_status.json
+    ports:
+      - "8000:8000"
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 5s
+      timeout: 15s
+      retries: 6
+    restart: unless-stopped
+    volumes:
+      - ./gold_data:/data
+
+  gold-candle-recorder:
+    build:
+      context: ./capital_trader
+      dockerfile: Dockerfile
+    container_name: gold-candle-recorder
+    init: true
+    depends_on:
+      capital-trader:
+        condition: service_healthy
+    environment:
+      GOLD_TRADER_URL: http://capital-trader:8000
+      GOLD_EPIC: GOLD
+      GOLD_CSV_PATH: /data/gold_candles.csv
+      GOLD_STATUS_PATH: /data/gold_recorder_status.json
+      GOLD_POLL_SECONDS: "15"
+      GOLD_MAX_POINTS: "300"
+      GOLD_RETENTION_DAYS: "0"
+      GOLD_REQUEST_TIMEOUT_SECONDS: "45"
+    command: ["python", "record_gold_candles.py"]
+    volumes:
+      - ./gold_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,time; s=json.load(open('/data/gold_recorder_status.json')); raise SystemExit(0 if s.get('status') == 'healthy' and time.time()-s.get('last_success_epoch', 0) < 180 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # -------------------------------------------------
+  # Clean‑Agent API
+  # -------------------------------------------------
+  clean-agent:
+    build:
+      context: ./clean-agent
+      dockerfile: Dockerfile
+    container_name: clean-agent
+    depends_on:
+      capital-trader:
+        condition: service_healthy
+    environment:
+      AGENT_HOST: 0.0.0.0
+      AGENT_PORT: 8091
+      OLLAMA_BASE_URL: http://host.docker.internal:11434/v1
+      OLLAMA_MODEL: gpt-oss:120b-cloud
+      TRADER_BASE_URL: http://capital-trader:8000
+      DATABASE_PATH: /data/agent.sqlite3
+      NOTIFICATION_WATCHER_ENABLED: "true"
+    ports:
+      - "8091:8091"
+    volumes:
+      - clean-agent-data:/data
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8091
+    restart: unless-stopped
+
+volumes:
+  tradingcore-postgres-data:
+  tradingcore-redis-data:
+  clean-agent-data:
+

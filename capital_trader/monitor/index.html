@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QTrader Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="../dashboard/Media/icon.png" />
+    <link rel="stylesheet" href="styles.css?v=4" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <div class="nav-left">
+                <span class="brand">QTrader Monitor</span>
+                <span class="brand-sep"></span>
+                <a href="/dashboard" class="nav-link">&larr; Dashboard</a>
+            </div>
+            <div class="nav-right">
+                <span style="font-size:0.68rem;color:var(--text-muted);font-family:var(--font-mono)" id="chart-status">Loading...</span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="controls">
+            <div class="control-group" id="epic-bar"></div>
+            <div class="control-sep"></div>
+            <div class="control-group" id="res-bar"></div>
+        </div>
+
+        <div class="history-controls" id="history-controls">
+            <label>From <input type="datetime-local" id="history-start" /></label>
+            <label>To <input type="datetime-local" id="history-end" /></label>
+            <label>Rows <input type="number" id="history-limit" min="1" max="10000" /></label>
+            <button type="button" id="apply-history">Load</button>
+            <button type="button" id="clear-history">Clear</button>
+            <a id="download-candles" href="#" download>Download CSV</a>
+        </div>
+
+        <div class="price-info">
+            <span class="price-current" id="price-current">—</span>
+            <span class="price-change" id="price-change">—</span>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2 id="chart-title">Candlestick Chart</h2>
+            </div>
+            <div class="chart-body" id="chart-container"></div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="monitor.js?v=4"></script>
+</body>
+</html>

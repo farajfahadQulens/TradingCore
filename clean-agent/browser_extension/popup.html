@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Clean Agent BI Bridge</title>
+    <style>
+      body { width: 280px; margin: 16px; color: #162029; font: 14px system-ui, sans-serif; }
+      h1 { font-size: 16px; margin: 0 0 8px; }
+      p { color: #657386; line-height: 1.4; }
+      button { background: #152538; border: 0; border-radius: 6px; color: white; cursor: pointer; padding: 10px 12px; width: 100%; }
+      button:disabled { cursor: wait; opacity: .6; }
+      #status { margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>Send page to Clean Agent</h1>
+    <p>Only the visible page text is sent. Passwords and cookies are not read.</p>
+    <button id="send">Send current page</button>
+    <p id="status" role="status"></p>
+    <script src="popup.js"></script>
+  </body>
+</html>

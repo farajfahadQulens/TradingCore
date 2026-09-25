@@ -1,0 +1,18 @@
+[project]
+name = "capital-trader"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "aiohttp",
+    "websockets",
+    "pydantic>=2",
+    "pydantic-settings",
+    "sqlalchemy[asyncio]",
+    "asyncpg",
+    "python-dotenv",
+    "structlog",
+    "prometheus-client",
+    "backoff",
+]
