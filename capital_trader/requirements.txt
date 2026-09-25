@@ -9,6 +9,7 @@
   python-dotenv
   structlog
   prometheus-client
-   backoff
+   pytest
+
    redis>=5
   

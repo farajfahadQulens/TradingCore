@@ -1,6 +1,6 @@
 services:
   # -------------------------------------------------
-  # PostgreSQL (used by Capital‑Trader)
+  # PostgreSQL (used by Capital-Trader)
   # -------------------------------------------------
   postgres:
     image: postgres:16-alpine
@@ -20,7 +20,7 @@ services:
       retries: 12
 
   # -------------------------------------------------
-  # Redis (message bus for Capital‑Trader)
+  # Redis (message bus for Capital-Trader)
   # -------------------------------------------------
   redis:
     image: redis:7-alpine
@@ -37,7 +37,7 @@ services:
       retries: 12
 
   # -------------------------------------------------
-  # Capital‑Trader API
+  # Capital-Trader API
   # -------------------------------------------------
   capital-trader:
     build:
@@ -101,7 +101,7 @@ services:
     restart: unless-stopped
 
   # -------------------------------------------------
-  # Clean‑Agent API
+  # Clean-Agent API
   # -------------------------------------------------
   clean-agent:
     build:

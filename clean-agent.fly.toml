@@ -1,0 +1,10 @@
+app = "tradingcore-clean-agent"
+primary_region = "iad"
+default_process = "uvicorn app.main:app --host 0.0.0.0 --port 8091"
+[env]
+  AGENT_HOST = "0.0.0.0"
+  AGENT_PORT = "8091"
+  OLLAMA_BASE_URL = "http://host.docker.internal:11434/v1"
+  OLLAMA_MODEL = "gpt-oss:120b-cloud"
+  TRADER_BASE_URL = "http://capital-trader:8000"
+  DATABASE_PATH = "/data/agent.sqlite3"

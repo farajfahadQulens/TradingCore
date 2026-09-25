@@ -1,0 +1,10 @@
+app = "tradingcore-capital-trader"
+primary_region = "iad"
+# Fly will pull the pre‑built image from GHCR
+default_process = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+[env]
+  # These are example environment variables; override via Fly secrets or GitHub Actions if needed
+  DATABASE_URL = "postgresql+asyncpg://postgres:postgres@postgres/trading"
+  REDIS_URL = "redis://redis:6379/0"
+  TRADER_BASE_URL = "http://capital-trader:8000"
+  # GHCR token will be provided as a secret named GHCR_TOKEN

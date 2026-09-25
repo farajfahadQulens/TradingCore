@@ -4,4 +4,4 @@ httpx
 pydantic
 pydantic-settings
 python-dotenv
-cryptography
+pytest
