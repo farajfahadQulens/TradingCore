@@ -1,15 +1,7 @@
 #!/bin/bash
-# Railway rebuild trigger
-
-# Choose which service to run via an env var (default: capital_trader)
-# Set SERVICE=clean_agent in Railway Variables to run the other one.
+# Railway start script – runs the FastAPI app in this image.
+# This image is built from the capital_trader directory, so the
+# FastAPI package lives directly under /app (no extra subdirectory).
 
 PORT=${PORT:-8000}
-
-if [[ "$SERVICE" == "clean_agent" ]]; then
-  cd clean-agent
-  exec python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
-else
-  cd capital_trader
-  exec python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
-fi
+exec python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
