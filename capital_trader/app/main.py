@@ -46,7 +46,11 @@ async def _corr_middleware(request: Request, call_next):
     return response
 
 
-app = FastAPI(lifespan=lifespan)
+
+@app.get("/")
+async def health_check():
+    return {"status": "ok"}
+
 app.middleware("http")(_corr_middleware)
 app.include_router(api_router, prefix="/api")
 app.include_router(api_router, prefix="/api/v1")
