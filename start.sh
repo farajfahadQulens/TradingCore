@@ -1,4 +1,5 @@
 #!/bin/bash
+# Railway rebuild trigger
 
 # Choose which service to run via an env var (default: capital_trader)
 # Set SERVICE=clean_agent in Railway Variables to run the other one.
