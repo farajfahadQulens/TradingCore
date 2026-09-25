@@ -1,7 +1,7 @@
 {
   "build": {
-    "dockerfilePath": "Dockerfile",
-    "context": "."
+    "dockerfilePath": "capital_trader/Dockerfile",
+    "context": "capital_trader"
   },
   "start": "./start.sh"
 }

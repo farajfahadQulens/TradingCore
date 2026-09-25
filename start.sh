@@ -5,8 +5,8 @@
 
 if [[ "$SERVICE" == "clean_agent" ]]; then
   cd clean-agent
-  exec uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  exec uvicorn app.main:app --host 0.0.0.0 --port 8091
 else
   cd capital_trader
-  exec uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  exec uvicorn app.main:app --host 0.0.0.0 --port 8000
 fi
