@@ -25,15 +25,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-- name: Run Capital-Trader unit tests
-          working-directory: ./capital_trader
-          env:
-            PYTHONPATH: ${{ github.workspace }}/capital_trader
-            CAPITAL_API_KEY: dummy_key
-            CAPITAL_USERNAME: dummy_user
-            CAPITAL_PASSWORD: dummy_pass
-          run: |
-            pytest -q
+      - name: Run Capital-Trader unit tests
+        working-directory: ./capital_trader
+        env:
+          PYTHONPATH: ${{ github.workspace }}/capital_trader
+          CAPITAL_API_KEY: dummy_key
+          CAPITAL_USERNAME: dummy_user
+          CAPITAL_PASSWORD: dummy_pass
+        run: |
+          pytest -q
 
       - name: Install Clean-Agent dependencies
         working-directory: ./clean-agent
