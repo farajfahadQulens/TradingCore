@@ -28,7 +28,7 @@ jobs:
       - name: Run Capital-Trader unit tests
         working-directory: ./capital_trader
         env:
-            PYTHONPATH: ${{ github.workspace }}/capital_trader
+            PYTHONPATH: ${{ github.workspace }}/clean-agent/capital_trader
           CAPITAL_API_KEY: dummy_key
           CAPITAL_USERNAME: dummy_user
           CAPITAL_PASSWORD: dummy_pass
@@ -44,7 +44,7 @@ jobs:
       - name: Run Clean-Agent unit tests
         working-directory: ./clean-agent
         env:
-          PYTHONPATH: ${{ github.workspace }}/clean-agent
+           PYTHONPATH: ${{ github.workspace }}
         run: |
           pytest -q
 
