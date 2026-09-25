@@ -7,7 +7,8 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+
 
 from app.api.routes import router as api_router
 from app.api.v1.accounts import router as accounts_router
