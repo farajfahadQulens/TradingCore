@@ -24,9 +24,9 @@ class Settings(BaseSettings):
         return self
 
     # Secrets
-    capital_api_key: SecretStr = Field(..., env="CAPITAL_API_KEY")
-    capital_username: SecretStr = Field(..., env="CAPITAL_USERNAME")
-    capital_password: SecretStr = Field(..., env="CAPITAL_PASSWORD")
+    capital_api_key: SecretStr | None = Field(default=None, env="CAPITAL_API_KEY")
+    capital_username: SecretStr | None = Field(default=None, env="CAPITAL_USERNAME")
+    capital_password: SecretStr | None = Field(default=None, env="CAPITAL_PASSWORD")
     # Runtime
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost/trading"
     redis_url: str = "redis://localhost:6379/0"

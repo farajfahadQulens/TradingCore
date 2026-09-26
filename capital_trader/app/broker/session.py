@@ -24,6 +24,11 @@ class SessionManager:
             if not self.token_expiry or self.token_expiry < datetime.now(timezone.utc) + timedelta(minutes=5):
                 await self._refresh()
     async def _refresh(self):
+        if not settings.capital_username or not settings.capital_password or not settings.capital_api_key:
+            logger.warning("Capital credentials missing – session manager will not authenticate")
+            self.connected = False
+            return
+
         async with self._session.post(
             CapitalComConstants.SESSION_ENDPOINT,
             json={
