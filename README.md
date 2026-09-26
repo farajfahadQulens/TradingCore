@@ -1,5 +1,10 @@
 # TradingCore
 
+**Environment variables**
+
+The application requires three Capital.com credentials. Provide them via Railway environment variables or a local `.env` file. See `.env.example` for the required format.
+
+
 This folder keeps the active trading system together without the rest of the
 older `Projects` workspace pressing on it.
 
