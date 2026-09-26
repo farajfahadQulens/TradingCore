@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy only requirement files first – Docker cache will reuse them on rebuilds
-COPY requirements.txt requirements-dev.txt ./
+COPY clean-agent/requirements.txt clean-agent/requirements-dev.txt .
 RUN pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
 # Copy the entire source tree (including .env.example)
-COPY . .
+COPY clean-agent/ .
 
 # Create a non‑root user (security best practice)
 RUN useradd -m appuser
