@@ -23,6 +23,7 @@ class Settings(BaseSettings):
         else:
             self.broker_base_url = "https://api-capital.com"
         self.broker_backend_url = f"{self.broker_base_url}/api/v1/"
+        return self
 
 
     # Secrets
