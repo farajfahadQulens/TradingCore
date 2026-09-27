@@ -17,6 +17,7 @@ orchestrator = Orchestrator()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await session_manager.start()
+    logger.debug("Session tokens – CST: %s, X-SECURITY-TOKEN: %s", session_manager.cst_token, session_manager.security_token)
     task = asyncio.create_task(orchestrator.run())
     try:
         yield
