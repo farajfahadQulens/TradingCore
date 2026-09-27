@@ -8,11 +8,12 @@ from pydantic import SecretStr, Field, model_validator
 
 class Settings(BaseSettings):
     # Environment – "demo" (sandbox) or "live" (production)
-    environment: str = "demo"
+    environment: str = Field(default="demo", env="CAPITAL_ENVIRONMENT")
     # Base URLs for the Capital.com API – change automatically based on environment
     broker_base_url: str = ""
     broker_ws_url: str = "wss://api-streaming-capital.backend-capital.com/connect"
-    broker_backend_url: str = 'https://api-capital.backend-capital.com/api/v1/'
+    broker_backend_url: str = ""
+
 
 
     @model_validator(mode="after")
@@ -21,7 +22,8 @@ class Settings(BaseSettings):
             self.broker_base_url = "https://demo-api-capital.com"
         else:
             self.broker_base_url = "https://api-capital.com"
-        return self
+        self.broker_backend_url = f"{self.broker_base_url}/api/v1/"
+
 
     # Secrets
     capital_api_key: SecretStr | None = Field(default=None, env="CAPITAL_API_KEY")
