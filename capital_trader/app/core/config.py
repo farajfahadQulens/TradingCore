@@ -25,6 +25,25 @@ class Settings(BaseSettings):
         self.broker_backend_url = f"{self.broker_base_url}/api/v1/"
         return self
 
+    @model_validator(mode="after")
+    def fallback_credential_names(self) -> "Settings":
+        # Some deployments accidentally use a trailing '<' in the env var name.
+        import os
+        if self.capital_username is None:
+            alt = os.getenv("CAPITAL_USERNAME<")
+            if alt:
+                self.capital_username = SecretStr(alt)
+        if self.capital_password is None:
+            alt = os.getenv("CAPITAL_PASSWORD<")
+            if alt:
+                self.capital_password = SecretStr(alt)
+        if self.capital_api_key is None:
+            alt = os.getenv("CAPITAL_API_KEY<")
+            if alt:
+                self.capital_api_key = SecretStr(alt)
+        return self
+
+
 
     # Secrets
     capital_api_key: SecretStr | None = Field(default=None, env="CAPITAL_API_KEY")
