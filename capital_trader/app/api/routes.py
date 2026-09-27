@@ -41,25 +41,13 @@ async def debug_settings():
     }
 
 
-@router.get("/debug/creds")
-async def debug_creds():
-    try:
-        api_key = settings.capital_api_key.get_secret_value() if settings.capital_api_key else None
-    except Exception:
-        api_key = None
-    try:
-        username = settings.capital_username.get_secret_value() if settings.capital_username else None
-    except Exception:
-        username = None
-    try:
-        password = settings.capital_password.get_secret_value() if settings.capital_password else None
-    except Exception:
-        password = None
-    return {
-        "api_key_present": bool(api_key),
-        "username_present": bool(username),
-        "password_present": bool(password),
-    }
+@router.get("/debug/env")
+async def debug_env():
+    # return a list of env vars that contain 'USERNAME' to see what we have
+    import os
+    matching = {k: v for k, v in os.environ.items() if 'USERNAME' in k}
+    return matching
+
 
 
 @router.get("/debug/positions")
