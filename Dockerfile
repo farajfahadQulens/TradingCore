@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r clean-agent-requirements.txt
 
 # ----- Application source -----
 COPY capital_trader/ ./capital_trader/
-COPY clean-agent/ ./clean-agent/
+COPY clean-agent/ ./clean_agent/
 
 # Add a start script that launches both services
 COPY start.sh /usr/local/bin/start.sh
