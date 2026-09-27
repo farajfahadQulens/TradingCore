@@ -37,13 +37,13 @@ services:
       retries: 12
 
   # -------------------------------------------------
-  # Capital-Trader API
+  # Combined Capital‑Trader & Clean‑Agent API
   # -------------------------------------------------
-  capital-trader:
+  app:
     build:
-      context: ./capital_trader
+      context: .
       dockerfile: Dockerfile
-    container_name: capital-trader
+    container_name: tradingcore-app
     depends_on:
       postgres:
         condition: service_healthy
@@ -58,10 +58,7 @@ services:
       GOLD_STATUS_PATH: /data/gold_recorder_status.json
     ports:
       - "8000:8000"
-    command: >
-      uvicorn app.main:app
-      --host 0.0.0.0
-      --port 8000
+      - "8091:8091"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 5s
@@ -71,6 +68,9 @@ services:
     volumes:
       - ./gold_data:/data
 
+  # -------------------------------------------------
+  # Gold candle recorder (still separate)
+  # -------------------------------------------------
   gold-candle-recorder:
     build:
       context: ./capital_trader
@@ -78,10 +78,10 @@ services:
     container_name: gold-candle-recorder
     init: true
     depends_on:
-      capital-trader:
+      app:
         condition: service_healthy
     environment:
-      GOLD_TRADER_URL: http://capital-trader:8000
+      GOLD_TRADER_URL: http://app:8000
       GOLD_EPIC: GOLD
       GOLD_CSV_PATH: /data/gold_candles.csv
       GOLD_STATUS_PATH: /data/gold_recorder_status.json
@@ -100,37 +100,7 @@ services:
       start_period: 30s
     restart: unless-stopped
 
-  # -------------------------------------------------
-  # Clean-Agent API
-  # -------------------------------------------------
-  clean-agent:
-    build:
-      context: ./clean-agent
-      dockerfile: Dockerfile
-    container_name: clean-agent
-    depends_on:
-      capital-trader:
-        condition: service_healthy
-    environment:
-      AGENT_HOST: 0.0.0.0
-      AGENT_PORT: 8091
-      OLLAMA_BASE_URL: http://host.docker.internal:11434/v1
-      OLLAMA_MODEL: gpt-oss:120b-cloud
-      TRADER_BASE_URL: http://capital-trader:8000
-      DATABASE_PATH: /data/agent.sqlite3
-      NOTIFICATION_WATCHER_ENABLED: "true"
-    ports:
-      - "8091:8091"
-    volumes:
-      - clean-agent-data:/data
-    command: >
-      uvicorn app.main:app
-      --host 0.0.0.0
-      --port 8091
-    restart: unless-stopped
-
 volumes:
   tradingcore-postgres-data:
   tradingcore-redis-data:
-  clean-agent-data:
 
