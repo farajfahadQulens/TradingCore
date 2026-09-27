@@ -41,16 +41,25 @@ async def debug_settings():
     }
 
 
-@router.get("/debug/equity")
-async def debug_equity():
+@router.get("/debug/creds")
+async def debug_creds():
     try:
-        async with BrokerClient() as client:
-            balance = await client.get_balance()
-            logger.info("debug_equity", balance=balance)
-            return {"equity": balance}
-    except Exception as e:
-        logger.error("debug_equity_error", error=str(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        api_key = settings.capital_api_key.get_secret_value() if settings.capital_api_key else None
+    except Exception:
+        api_key = None
+    try:
+        username = settings.capital_username.get_secret_value() if settings.capital_username else None
+    except Exception:
+        username = None
+    try:
+        password = settings.capital_password.get_secret_value() if settings.capital_password else None
+    except Exception:
+        password = None
+    return {
+        "api_key_present": bool(api_key),
+        "username_present": bool(username),
+        "password_present": bool(password),
+    }
 
 
 @router.get("/debug/positions")
