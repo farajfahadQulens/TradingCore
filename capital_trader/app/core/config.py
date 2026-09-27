@@ -43,6 +43,6 @@ class Settings(BaseSettings):
     stale_tick_threshold_ms: int = 2000
     max_spread: dict = {"GOLD": 0.50, "US500": 3.0}
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict()
 
 settings = Settings()
