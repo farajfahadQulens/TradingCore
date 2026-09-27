@@ -11,6 +11,10 @@ from fastapi.staticfiles import StaticFiles
 
 from app.broker.session import session_manager
 from app.orchestrator import Orchestrator
+from app.core.logging import configure_logging, get_logger
+
+logger = get_logger(__name__)
+
 
 orchestrator = Orchestrator()
 
