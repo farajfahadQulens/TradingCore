@@ -11,6 +11,8 @@ class CapitalComConstants:
     API_VERSION = "v1"
     BASE_URL = 'https://api-capital.backend-capital.com/api/{}/'.format(API_VERSION)
 
+
+
     SESSION_ENDPOINT = BASE_URL + "session"
     ACCOUNTS_ENDPOINT = BASE_URL + "accounts"
     POSITIONS_ENDPOINT = BASE_URL + "positions"
