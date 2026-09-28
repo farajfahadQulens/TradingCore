@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from app.broker.session import session_manager
 from app.orchestrator import Orchestrator
 from app.core.logging import configure_logging, get_logger
+from app.core.proxy import UpstreamProxy
 
 logger = get_logger(__name__)
 
@@ -71,6 +72,9 @@ dashboard_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "
 monitor_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "monitor"))
 app.mount("/monitor", StaticFiles(directory=monitor_path, html=True), name="monitor")
 app.mount("/dashboard", StaticFiles(directory=dashboard_path, html=True), name="dashboard")
+
+clean_agent_url = os.getenv("CLEAN_AGENT_URL", "http://127.0.0.1:8091")
+app.mount("/agent", UpstreamProxy(clean_agent_url, strip_prefix="/agent"), name="agent")
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=False)

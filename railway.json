@@ -2,8 +2,7 @@
   "build": {
     "dockerfilePath": "Dockerfile",
     "context": "."
-  },
-  "start": ""
+  }
 }
 
 

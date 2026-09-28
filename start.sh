@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
-# Start Capital‑Trader (FastAPI) on the port provided by Railway ($PORT, default 8000)
-nohup uvicorn capital_trader.app.main:app --host 0.0.0.0 --port ${PORT:-8000} > /tmp/capital_trader.log 2>&1 &
+CAPITAL_TRADER_DIR=/app/capital_trader
+CLEAN_AGENT_DIR=/app/clean_agent
+CAPITAL_TRADER_PORT=${PORT:-8000}
+CLEAN_AGENT_PORT=${CLEAN_AGENT_PORT:-8091}
 
-# Start Clean‑Agent (FastAPI) background service on a fixed port 8091
-nohup uvicorn clean_agent.app.main:app --host 0.0.0.0 --port 8091 > /tmp/clean_agent.log 2>&1 &
+mkdir -p /app/clean_agent/data
 
-# Keep the container alive while both processes run
-wait
+(
+  cd "$CAPITAL_TRADER_DIR" || exit 1
+  exec uvicorn app.main:app --host 0.0.0.0 --port "$CAPITAL_TRADER_PORT"
+) &
+
+(
+  cd "$CLEAN_AGENT_DIR" || exit 1
+  exec uvicorn app.main:app --host 0.0.0.0 --port "$CLEAN_AGENT_PORT"
+) &
+
+wait -n

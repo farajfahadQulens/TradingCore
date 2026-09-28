@@ -1,0 +1,16 @@
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.git/
+**/.env
+**/.env.*
+!clean-agent/.env.example
+!**/.env.example
+**/data/
+gold_data/
+**/dashboard/Media/
+*.csv
+*.log
+.DS_Store

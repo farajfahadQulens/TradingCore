@@ -24,6 +24,9 @@ COPY clean-agent/ ./clean_agent/
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
+# Create writable data directories owned by the runtime user
+RUN mkdir -p /app/clean_agent/data /app/capital_trader/data && chown -R appuser:appuser /app
+
 # Switch to non‑root user
 USER appuser
 
