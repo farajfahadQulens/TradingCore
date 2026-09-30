@@ -27,81 +27,10 @@ async def deep_health():
 
 
 
-@router.get("/debug/settings")
-async def debug_settings():
-    logger.info("debug_settings",
-        environment=settings.environment,
-        broker_base_url=settings.broker_base_url,
-        broker_ws_url=settings.broker_ws_url,
-    )
-    return {
-        "environment": settings.environment,
-        "broker_base_url": settings.broker_base_url,
-        "broker_ws_url": settings.broker_ws_url,
-    }
-
-
-@router.get("/debug/env")
-async def debug_env():
-    # return a list of env vars that contain 'USERNAME' to see what we have
-    import os
-    matching = {k: v for k, v in os.environ.items() if 'USERNAME' in k}
-    return matching
 
 
 
-@router.get("/debug/positions")
-async def debug_positions():
-    try:
-        async with BrokerClient() as client:
-            data = await client.get_positions()
-            logger.info("debug_positions", count=len(data.get("positions", [])))
-            return data
-    except Exception as e:
-        logger.error("debug_positions_error", error=str(e))
-        raise HTTPException(status_code=500, detail=str(e))
 
-
-@router.get("/debug/sync-positions")
-async def sync_positions():
-    try:
-        async with BrokerClient() as client:
-            data = await client.get_positions()
-            logger.info("debug_positions", count=len(data.get("positions", [])))
-            async with get_session() as session:
-                saved = []
-
-                for item in data.get("positions", []):
-                    p = item["position"]
-                    m = item["market"]
-                    pos = Position(
-                        id=p["dealId"],
-                        epic=m["epic"],
-                        size=p["size"],
-                        entry_price=p["level"],
-                        stop_loss=p.get("stopLevel"),
-                        deal_reference=p["dealReference"],
-                        status="OPEN",
-                    )
-                    result = await PositionRepo.create_position(session, pos)
-                    saved.append(result.id)
-
-            return {"synced": saved}
-            
-    except Exception as e:
-        logger.error("debug_positions_error", error=str(e))
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/debug/recent-positions")
-async def debug_recent_positions():
-    try:
-        async with BrokerClient() as client:
-            data = await client.get_history(from_date="2026-05-08T01:09:47", to_date="2026-05-08T20:10:05")
-            logger.info("debug_recent_positions", count=len(data.get("activities", [])))
-            return data
-    except Exception as e:
-        logger.error("debug_recent_positions_error", error=str(e))
-        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/account")
 async def account_info():
